@@ -45,6 +45,54 @@ Promise.all([m1,m2]).then(() => {
     renderer.render(scene,camera);    
 });
 
+var radioMusic = document.getElementById('audio-player');
+radioMusic.loop = true;
+radioMusic.volume = 0.15;
+
+var clickSound = document.getElementById('click');
+clickSound.setAttribute("preload", "auto");
+clickSound.autobuffer = true;
+clickSound.volume = 0.2;
+
+// var concreteScrape = document.getElementById('concrete');
+// concreteScrape.loop = true;
+// concreteScrape.volume = 0.3;
+// concreteScrape.setAttribute("preload", "auto");
+// concreteScrape.play();
+
+var radioOn = true;
+function radioPlayPause(){
+    if ( radioOn != false ) {
+        radioOn = false;
+        radioMusic.play();
+    } else {
+        radioOn = true;
+        radioMusic.pause();
+    }
+}
+radioPlayPause();
+
+// Unique function to load and loop scraping sound
+// # Default js .loop(); has wierd delay after end 
+var actx = new (AudioContext || webkitAudioContext)(),
+    src = "sound/concrete-quiet.mp3",
+    srcNode;  // global so we can access them from handlers
+
+// Load some audio (CORS need to be allowed or we won't be able to decode the data)
+fetch(src, {mode: "cors"}).then(function(resp) {return resp.arrayBuffer()}).then(decode);
+// Decode the audio file, then start the show
+function decode(buffer) {
+    actx.decodeAudioData(buffer, playLoop);
+}
+// Sets up a new source node as needed as stopping will render current invalid
+function playLoop(abuffer) {
+  srcNode = actx.createBufferSource();  // create audio source
+  srcNode.buffer = abuffer;             // use decoded buffer
+  srcNode.connect(actx.destination);    // create output
+  srcNode.loop = true;
+  srcNode.start();
+}
+
 // Mouse click event -> raycaster 
 renderer.domElement.addEventListener('click', onClick, false);
 function onClick( event ) {
@@ -57,7 +105,8 @@ function onClick( event ) {
     
     var clicked = false;
     if ( intersects.length > 0 ) {
-        alert("radioClick")
+        clickSound.play();
+        radioPlayPause();
     }
 }
 
