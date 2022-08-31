@@ -91,6 +91,7 @@ if (radioPromise !== undefined) {
 playbackButton.onclick = function() {
     radioMusic.play();
     playbackButton.style.display = "none";
+    srcNode.start();
 };
 
 // Unique function to load and loop scraping sound
