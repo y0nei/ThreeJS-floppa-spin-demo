@@ -1,13 +1,14 @@
 import {GLTFLoader} from "./js/GLTFLoader.js";
 
-let INTERSECTED;
+var INTERSECTED;
+var cursor = document.getElementById("cursor");
 var lightColor = 0xffffff;
 var radioHoverColor = 0xfA5220;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(100, window.innerWidth/window.innerHeight, 0.1, 1000);
-var renderer = new THREE.WebGLRenderer({ 
+var renderer = new THREE.WebGLRenderer( { 
     antialias: true, 
     alpha: true 
 });
@@ -18,7 +19,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-// Multiple model loading
+// Model loader
 function loadModel(url) {
     return new Promise(resolve => {
         new GLTFLoader().load(url, resolve);
@@ -36,7 +37,7 @@ Promise.all([m1,m2]).then(() => {
     radioModel.rotation.z = 0.3;
     
     floppaModel.castShadow = true;
-    radioModel.traverse(function(node){
+    radioModel.traverse(function(node) {
         if (node.isMesh){ 
             node.castShadow = true;
         }
@@ -66,8 +67,8 @@ clickSound.volume = 0.2;
 // concreteScrape.play();
 
 var radioOn = true;
-function radioPlayPause(){
-    if ( radioOn != false ) {
+function radioPlayPause() {
+    if ( radioOn == true ) {
         radioOn = false;
         radioMusic.play();
     } else {
@@ -99,29 +100,33 @@ function playLoop(abuffer) {
 }
 
 renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
 function onDocumentMouseMove(event) {
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
-// Mouse click event -> raycaster 
 renderer.domElement.addEventListener('click', onClick, false);
-function onClick( event ) {
+renderer.domElement.addEventListener('mousemove', onHover, false);
+
+// Mouse click event -> raycaster 
+function onClick(event) {
     event.preventDefault();
-    
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObject( radioModel );
     
     if ( intersects.length > 0 ) {
-        clickSound.play();
-        radioPlayPause();
+        if ( intersects[0] != INTERSECTED )
+            clickSound.play();
+            radioPlayPause();
+            INTERSECTED = intersects[0].object;
     } 
 }
 
 // https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Mouse-Over.html
 // Mouse hover event -> raycaster 
-renderer.domElement.addEventListener('mousemove', onHover, false);
-function onHover( event ) {
+function onHover(event) {
+    event.preventDefault();
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObject( radioModel );
     
@@ -130,20 +135,18 @@ function onHover( event ) {
             if ( INTERSECTED ) {
                 INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
             }
-            
             INTERSECTED = intersects[0].object;
             INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
             INTERSECTED.material.color.setHex(radioHoverColor);
-            document.getElementById("cursor").style.cursor = "pointer";
+            cursor.style.cursor = "pointer";
         }
     }
     else {
         if ( INTERSECTED ) {
             INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
         }
-            
         INTERSECTED = null;
-        document.getElementById("cursor").style.cursor = "default";
+        cursor.style.cursor = "default";
     }
 }
 
