@@ -1,7 +1,8 @@
 import {GLTFLoader} from "./js/GLTFLoader.js";
 
 var INTERSECTED;
-var cursor = document.getElementById("cursor");
+var cursor = document.getElementById('cursor');
+var playbackButton = document.querySelector('button');
 var lightColor = 0xffffff;
 var radioHoverColor = 0xfA5220;
 var raycaster = new THREE.Raycaster();
@@ -66,7 +67,7 @@ clickSound.volume = 0.2;
 // concreteScrape.setAttribute("preload", "auto");
 // concreteScrape.play();
 
-var radioOn = true;
+var radioOn = false;
 function radioPlayPause() {
     if ( radioOn == true ) {
         radioOn = false;
@@ -76,7 +77,21 @@ function radioPlayPause() {
         radioMusic.pause();
     }
 }
-radioPlayPause();
+
+// Enable Playback
+var radioPromise = radioMusic.play();
+if (radioPromise !== undefined) {
+    radioPromise.then(_ => {
+        console.log('Autoplay started!');
+    }).catch(_ => {
+        playbackButton.style.display = "flex";
+    });
+}
+
+playbackButton.onclick = function() {
+    radioMusic.play();
+    playbackButton.style.display = "none";
+};
 
 // Unique function to load and loop scraping sound
 // # Default js .loop(); has wierd delay after end 

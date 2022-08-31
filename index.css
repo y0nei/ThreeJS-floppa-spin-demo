@@ -1,6 +1,26 @@
 body {
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-canvas {
-    background-color: #242424;
+canvas { background-color: #242424; }
+button {
+    position: absolute;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+    
+    border: 0;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.1rem;
 }
+button a {
+    padding: 5px 15px;
+    font-size: 1.6vw;
+}
+
+@media only screen and (max-width: 1500px) {
+    button a { font-size: 1.25em; }
+} 
