@@ -1,6 +1,8 @@
 import {GLTFLoader} from "./js/GLTFLoader.js";
 
+let INTERSECTED;
 var lightColor = 0xffffff;
+var radioHoverColor = 0xfA5220;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var scene = new THREE.Scene();
@@ -36,10 +38,13 @@ Promise.all([m1,m2]).then(() => {
     floppaModel.castShadow = true;
     radioModel.traverse(function(node){
         if (node.isMesh){ 
-            node.castShadow = true; 
+            node.castShadow = true;
         }
     })
-    
+    // const switchLight = new THREE.PointLight(0xfff000, 2, 2)
+    // switchLight.intensity = 2;
+    // radioModel.add(switchLight);
+
     scene.add(floppaModel);
     scene.add(radioModel);
     renderer.render(scene,camera);    
@@ -93,20 +98,52 @@ function playLoop(abuffer) {
   srcNode.start();
 }
 
+renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+function onDocumentMouseMove(event) {
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
 // Mouse click event -> raycaster 
 renderer.domElement.addEventListener('click', onClick, false);
 function onClick( event ) {
     event.preventDefault();
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObject( radioModel );
     
-    var clicked = false;
     if ( intersects.length > 0 ) {
         clickSound.play();
         radioPlayPause();
+    } 
+}
+
+// https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Mouse-Over.html
+// Mouse hover event -> raycaster 
+renderer.domElement.addEventListener('mousemove', onHover, false);
+function onHover( event ) {
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = raycaster.intersectObject( radioModel );
+    
+    if ( intersects.length > 0 ) {
+        if ( intersects[0].object != INTERSECTED ) {
+            if ( INTERSECTED ) {
+                INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+            }
+            
+            INTERSECTED = intersects[0].object;
+            INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+            INTERSECTED.material.color.setHex(radioHoverColor);
+            document.getElementById("cursor").style.cursor = "pointer";
+        }
+    }
+    else {
+        if ( INTERSECTED ) {
+            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+        }
+            
+        INTERSECTED = null;
+        document.getElementById("cursor").style.cursor = "default";
     }
 }
 
