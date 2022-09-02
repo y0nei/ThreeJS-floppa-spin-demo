@@ -1,10 +1,14 @@
+// TODO: Revamp project structure into init() render() and animate()
+// TODO: Revamp multiple object loading
+// TODO: Object outline on mouse hover
+
 import {GLTFLoader} from "./js/GLTFLoader.js";
 
 var INTERSECTED;
 var cursor = document.getElementById('cursor');
 var playbackButton = document.querySelector('button');
 var lightColor = 0xffffff;
-var radioHoverColor = 0xfA5220;
+var radioHoverColor = 0xffe66d;
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var scene = new THREE.Scene();
@@ -15,7 +19,6 @@ var renderer = new THREE.WebGLRenderer( {
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-// renderer.setViewport(0, 200, window.innerWidth, window.innerHeight); // Center everything
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
@@ -28,8 +31,8 @@ function loadModel(url) {
 }
 
 let floppaModel, radioModel;
-let m1 = loadModel('models/floppa.gltf').then(result => {  floppaModel = result.scene.children[0]; });
-let m2 = loadModel('models/radio.gltf').then(result => {  radioModel = result.scene.children[0]; });
+let m1 = loadModel('models/floppa.gltf').then(result => { floppaModel = result.scene.children[0]; });
+let m2 = loadModel('models/radio.gltf').then(result => { radioModel = result.scene.children[0]; });
 
 Promise.all([m1,m2]).then(() => {
     // floppaModel.position.set(0,0.034,0);
@@ -43,16 +46,11 @@ Promise.all([m1,m2]).then(() => {
             node.castShadow = true;
         }
     })
-    // const switchLight = new THREE.PointLight(0xfff000, 2, 2)
-    // switchLight.intensity = 2;
-    // radioModel.add(switchLight);
-
     scene.add(floppaModel);
     scene.add(radioModel);
-    renderer.render(scene,camera);    
 });
 
-var radioMusic = document.getElementById('audio-player');
+var radioMusic = document.getElementById('radio-music');
 radioMusic.loop = true;
 radioMusic.volume = 0.15;
 
@@ -60,12 +58,6 @@ var clickSound = document.getElementById('click');
 clickSound.setAttribute("preload", "auto");
 clickSound.autobuffer = true;
 clickSound.volume = 0.2;
-
-// var concreteScrape = document.getElementById('concrete');
-// concreteScrape.loop = true;
-// concreteScrape.volume = 0.3;
-// concreteScrape.setAttribute("preload", "auto");
-// concreteScrape.play();
 
 var radioOn = false;
 function radioPlayPause() {
@@ -112,7 +104,7 @@ function playLoop(abuffer) {
   srcNode.buffer = abuffer;             // use decoded buffer
   srcNode.connect(actx.destination);    // create output
   srcNode.loop = true;
-  srcNode.start();
+//   srcNode.start();
 }
 
 renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -132,10 +124,11 @@ function onClick(event) {
     var intersects = raycaster.intersectObject( radioModel );
     
     if ( intersects.length > 0 ) {
-        if ( intersects[0] != INTERSECTED )
+        if ( intersects[0] != INTERSECTED ) {
             clickSound.play();
             radioPlayPause();
             INTERSECTED = intersects[0].object;
+        }
     } 
 }
 
@@ -145,7 +138,7 @@ function onHover(event) {
     event.preventDefault();
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObject( radioModel );
-    
+
     if ( intersects.length > 0 ) {
         if ( intersects[0].object != INTERSECTED ) {
             if ( INTERSECTED ) {
@@ -193,7 +186,9 @@ scene.add(plane);
 camera.position.set(0,2,5);
 function animate() {
     requestAnimationFrame(animate);
-    floppaModel.rotation.y += 0.01;
+    if (floppaModel) {
+        floppaModel.rotation.y += 0.01;
+    }
     renderer.render(scene,camera);
 }
 animate();
