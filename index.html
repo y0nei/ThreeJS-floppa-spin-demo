@@ -7,26 +7,29 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="./js/three.js"></script>
 	</head>
-	<body id="cursor">
+	<body id="cursor" class="flex">
 		<audio id="radio-music"> <source src="sound/still-alive-loop.mp3" type="audio/mpeg"> </audio>
 		<button><a>enable sound</a></button>
 		<audio id="click"> <source src="sound/click.mp3" type="audio/mpeg"> </audio>
 		<audio id="concrete"> <source src="sound/concrete.mp3" type="audio/mpeg"> </audio>
 		<script type="module" src="index.js"></script>
-		<header>
-			<div id="title">
+		<header class="flex">
+			<div id="title" class="flex">
 				<p>welcome to my</p>
 				<h1>&nbsp;portfolio</h1>
 			</div>
 			<p id="header-desc">i was bored, why did i do this?</p>
 		</header>
-		<div id="socials">
-			<a href="https://gitlab.com/y0nei" target="_blank">
-				<img class="fa" src="svg/gitlab.svg">
-			</a>
-			<a href="mailto: xyz.im@proton.me">
-				<img class="fa" src="svg/envelope-solid.svg">
-			</a>
-		</div>
+		<footer class="flex">
+			<div id="socials" class="flex">
+				<a href="https://gitlab.com/y0nei" target="_blank">
+					<img class="fa" src="svg/gitlab.svg">
+				</a>
+				<a href="https://twitter.com/y0nei" target="_blank">
+					<img class="fa" src="svg/twitter.svg">
+				</a>
+			</div>
+			<a id="copy">&copy; y0nei 2022</a>
+		</footer>
 	</body>
 </html>

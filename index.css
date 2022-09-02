@@ -9,22 +9,22 @@
     font-family: 'Rubik';
 }
 body {
-    display: flex;
     justify-content: center;
     align-items: center;
 }
 canvas { background-color: #242424; }
 button, .fa { cursor: pointer; }
+.flex { display: flex; }
 .fa {
-    width: 30px;
+    width: 25px;
     filter: invert(1);
 }
 
+/* *Enable audio button */
 button {
     position: absolute;
     border-radius: 10px;
     display: none;
-    
     border: 0;
     border-radius: 50px;
     text-decoration: none;
@@ -36,28 +36,21 @@ button a {
     color: black;
 }
 
+/* *Header */
 header {
     position: absolute;
-    display: flex;
     flex-direction: column;
     align-items: center;
-    top: 20%;
+    top: 25%;
     animation: slideDown 3s ;
 }
-header #title {
-    display: flex;
-    align-items: center;
-}
-header * {
-    font-size: 3vw;
-}
+header * { font-size: 3vw; }
 p#header-desc {
     font-style: italic;
     font-size: 1vw;
     animation: descSlideDown 6s;
     opacity: 0.7;
 }
-
 #title h1 {
     background: linear-gradient(
         -135deg,
@@ -75,23 +68,38 @@ p#header-desc {
     background-size: 210% 100%;
 }
 
-#socials {
+/* *Footer */
+footer {
     position: absolute;
-    display: flex;
-    left: 0;
-    top: 0;
-    margin: 10px;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 15px;
+    bottom: 0;
 }
+#socials { border-radius: 0 10px 0 0; }
+#socials, #copy { background-color: #111111; }
 #socials img:hover {
-    filter: brightness(0) saturate(100%) invert(80%) sepia(35%) saturate(579%) hue-rotate(350deg) brightness(105%) contrast(105%);
+    filter: 
+        brightness(0) 
+        saturate(100%) 
+        invert(80%) 
+        sepia(35%) 
+        saturate(579%) 
+        hue-rotate(350deg) 
+        brightness(105%) 
+        contrast(105%);
 }
-#socials a:first-child { margin: 0; }
-#socials a {
-    margin-left: 15px;
+footer a {
+    padding: 5px;
     display: flex;
     align-items: center;
 }
+footer a#copy { 
+    border-radius: 10px 0 0 0;
+    padding: 0 10px; 
+}
 
+/* *Keyframes */
 @keyframes titleGradient {
     0% { background-size: 100% 650%; }
     50% { background-size: 100% 650%; }
@@ -102,7 +110,7 @@ p#header-desc {
         opacity: 0;
         top: -80px;
     }
-    100% { top: 20%; }
+    100% { top: 25%; }
 }
 @keyframes descSlideDown {
     0% {
@@ -119,6 +127,7 @@ p#header-desc {
     }
 }
 
+/* *Responsiveness */
 @media only screen and (max-width: 1500px) {
     button a { font-size: 1em; }
     header * { font-size: 2.7rem; }

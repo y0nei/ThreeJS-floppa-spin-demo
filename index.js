@@ -104,8 +104,9 @@ function playLoop(abuffer) {
   srcNode.buffer = abuffer;             // use decoded buffer
   srcNode.connect(actx.destination);    // create output
   srcNode.loop = true;
-//   srcNode.start();
+  srcNode.start();
 }
+playLoop();
 
 renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
